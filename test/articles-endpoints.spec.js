@@ -2,7 +2,7 @@ const { expect } = require("chai");
 const knex = require("knex");
 const app = require("../src/app");
 
-describe("Articles endpoints", () => {
+describe.only("Articles endpoints", () => {
   let db;
 
   before("make knex instance", () => {
@@ -10,11 +10,12 @@ describe("Articles endpoints", () => {
       client: "pg",
       connection: process.env.TEST_DB_URL,
     });
+    app.set("db", db);
   });
 
   after("Disconnect from db", () => db.destroy());
   before("Clear the table", () => db("blogful_articles").truncate());
-
+  afterEach("cleanup", () => db("blogful_articles").truncate());
   context("Given there are articles in the database", () => {
     const testArticles = [
       {
@@ -51,8 +52,22 @@ describe("Articles endpoints", () => {
       },
     ];
 
-    beforeEach('insert articles', () => {
-        return db.into('blogful_articles').insert(testArticles)
-    })
+    beforeEach("insert articles", () => {
+      return db.into("blogful_articles").insert(testArticles);
+    });
+
+    it("GET /articles responds with 200 and all of the articles", () => {
+      return supertest(app).get("/articles").expect(200, testArticles);
+      //todo: add more assertions about the body
+    });
+
+    it("GET /articles/:article_id responds with 200 and the correct article", () => {
+      const articleId = 2;
+      const expectedArticle = testArticles[articleId - 1];
+
+      return supertest(app)
+        .get(`/articles/${articleId}`)
+        .expect(200, expectedArticle);
+    });
   });
 });
