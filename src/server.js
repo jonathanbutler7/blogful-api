@@ -1,5 +1,6 @@
-const knex = require("knex");
+//point of entry
 const app = require("./app");
+const knex = require("knex");
 const { PORT, DB_URL } = require("./config");
 
 const db = knex({

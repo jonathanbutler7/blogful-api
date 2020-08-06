@@ -1,4 +1,4 @@
-// const knex = require('knex')
+const knex = require('knex')
 
 const ArticlesService = {
   getAllArticles(knex) {
@@ -23,5 +23,5 @@ const ArticlesService = {
     return knex("blogful_articles").where({ id }).update(newArticleFields);
   },
 };
-ArticlesService.getAllArticles();
+// ArticlesService.getAllArticles(knex);
 module.exports = ArticlesService;

@@ -18,6 +18,7 @@ app.use(cors());
 app.get("/articles", (req, res, next) => {
   // res.send('All articles')
   const knexInstance = req.app.get('db')
+  console.log(knexInstance)
   ArticlesService.getAllArticles(knexInstance)
     .then((articles) => {
       res.json(articles);
